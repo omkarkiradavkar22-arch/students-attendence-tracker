@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Attendance System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+
+    <div class="topbar">
+      <div>
+        <h1>🎓 Student Attendance System</h1>
+        <p id="currentDate"></p>
+      </div>
+
+      <button id="themeBtn" class="secondary-btn">
+        🌙 Dark Mode
+      </button>
+    </div>
+
+    <div class="dashboard">
+
+      <div class="card">
+        <h3>Total Students</h3>
+        <p id="totalStudents">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Present Today</h3>
+        <p id="presentToday">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Absent Today</h3>
+        <p id="absentToday">0</p>
+      </div>
+
+      <div class="card">
+        <h3>Today's Attendance</h3>
+        <p id="todayPercentage">0%</p>
+      </div>
+
+    </div>
+
+    <div class="progress-section">
+      <div class="progress-header">
+        <span>Today's Attendance Progress</span>
+        <span id="progressText">0%</span>
+      </div>
+
+      <div class="progress-bar">
+        <div id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="form-box">
+
+      <input
+        type="number"
+        id="rollInput"
+        placeholder="Enter roll number"
+      />
+
+      <input
+        type="text"
+        id="nameInput"
+        placeholder="Enter student name"
+      />
+
+      <button onclick="addOrUpdateStudent()" id="saveBtn">
+        Add Student
+      </button>
+
+      <button
+        onclick="cancelEdit()"
+        id="cancelBtn"
+        class="secondary-btn hidden"
+      >
+        Cancel
+      </button>
+
+    </div>
+
+    <div class="toolbar">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search student..."
+        oninput="renderStudents()"
+      />
+
+      <select id="filterSelect" onchange="renderStudents()">
+        <option value="all">All Students</option>
+        <option value="present">Present Today</option>
+        <option value="absent">Absent Today</option>
+        <option value="not-marked">Not Marked</option>
+        <option value="low">Below 75%</option>
+      </select>
+
+      <select id="sortSelect" onchange="renderStudents()">
+        <option value="roll">Sort by Roll No.</option>
+        <option value="name">Sort by Name</option>
+        <option value="high">Highest Attendance</option>
+        <option value="low">Lowest Attendance</option>
+      </select>
+
+    </div>
+
+    <div class="action-buttons">
+
+      <button onclick="markAllPresent()" class="present-main">
+        ✅ Mark All Present
+      </button>
+
+      <button onclick="clearTodayAttendance()" class="warning-main">
+        🔄 Clear Today's Attendance
+      </button>
+
+      <button onclick="exportCSV()" class="export-main">
+        📥 Export CSV
+      </button>
+
+    </div>
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Roll No.</th>
+            <th>Name</th>
+            <th>Present</th>
+            <th>Absent</th>
+            <th>Total</th>
+            <th>Attendance</th>
+            <th>Today</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody id="studentTable"></tbody>
+
+      </table>
+
+    </div>
+
+    <div id="warningBox" class="warning-box"></div>
+
+  </div>
+
+  <div id="historyModal" class="modal hidden">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h2 id="historyTitle">Attendance History</h2>
+        <button onclick="closeHistory()">✕</button>
+      </div>
+
+      <div id="historyContent"></div>
+
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+
+</body>
+</html>
