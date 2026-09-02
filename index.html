@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Attendance Management System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+<!-- ================= LOGIN PAGE ================= -->
+
+<section id="loginPage" class="login-page">
+
+  <div class="login-box">
+
+    <h1>🎓 Attendance System</h1>
+
+    <p>Admin / Teacher Login</p>
+
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Email"
+    />
+
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+    />
+
+    <button onclick="login()">
+      Login
+    </button>
+
+    <!-- <div class="demo-login">
+
+      <h4>Demo Accounts</h4>
+
+      <p>
+        Admin:<br>
+        admin@attendance.com<br>
+        Admin@123
+      </p>
+
+      <p>
+        ML Teacher:<br>
+        teacher1@attendance.com<br>
+        Teacher@123
+      </p>
+
+      <p>
+        IoT Teacher:<br>
+        teacher2@attendance.com<br>
+        Teacher@123
+      </p>
+
+    </div> -->
+
+  </div>
+
+</section>
+
+
+
+<!-- ================= MAIN APP ================= -->
+
+<div id="mainApp" class="hidden">
+
+  <div class="container">
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+      <div>
+        <h1>🎓 Student Attendance System</h1>
+
+        <p id="loggedUserInfo">
+          Welcome
+        </p>
+      </div>
+
+      <div class="header-actions">
+
+        <button
+          id="themeBtn"
+          class="secondary-btn"
+        >
+          🌙 Dark Mode
+        </button>
+
+        <button
+          class="danger-btn"
+          onclick="logout()"
+        >
+          Logout
+        </button>
+
+      </div>
+
+    </header>
+
+
+
+    <!-- ROLE BADGE -->
+
+    <div class="role-box">
+
+      Logged in as:
+
+      <strong id="roleText">
+        -
+      </strong>
+
+    </div>
+
+
+
+    <!-- ================= ADMIN SECTION ================= -->
+
+    <section
+      id="adminPanel"
+      class="hidden"
+    >
+
+      <div class="section-card">
+
+        <h2>👨‍🏫 Teacher Management</h2>
+
+        <div class="teacher-form">
+
+          <input
+            type="text"
+            id="teacherName"
+            placeholder="Teacher Name"
+          />
+
+          <input
+            type="email"
+            id="teacherEmail"
+            placeholder="Teacher Email"
+          />
+
+          <input
+            type="password"
+            id="teacherPassword"
+            placeholder="Password"
+          />
+
+          <select id="teacherSubject">
+
+            <option value="Machine Learning">
+              Machine Learning
+            </option>
+
+            <option value="Internet of Things">
+              Internet of Things
+            </option>
+
+            <option value="Full Stack Development II">
+              Full Stack Development II
+            </option>
+
+            <option value="Cyber Security">
+              Cyber Security
+            </option>
+
+          </select>
+
+          <select id="teacherClass">
+
+            <option value="SY MSc CS">
+              SY MSc CS
+            </option>
+
+            <option value="FY MSc CS">
+              FY MSc CS
+            </option>
+
+          </select>
+
+          <button onclick="addTeacher()">
+            Add Teacher
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- TEACHER LIST -->
+
+      <div class="section-card">
+
+        <h2>Teacher Accounts</h2>
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Subject</th>
+              <th>Class</th>
+              <th>Action</th>
+            </tr>
+
+            </thead>
+
+            <tbody id="teacherTable"></tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= ATTENDANCE CONTROLS ================= -->
+
+    <section class="controls">
+
+      <div>
+
+        <label>Date</label>
+
+        <input
+          type="date"
+          id="attendanceDate"
+          onchange="renderStudents()"
+        />
+
+      </div>
+
+
+      <div>
+
+        <label>Class</label>
+
+        <select
+          id="classSelect"
+          onchange="renderStudents()"
+        >
+
+          <option value="SY MSc CS">
+            SY MSc CS
+          </option>
+
+          <option value="FY MSc CS">
+            FY MSc CS
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div>
+
+        <label>Subject</label>
+
+        <select
+          id="subjectSelect"
+          onchange="renderStudents()"
+        >
+
+          <option value="Machine Learning">
+            Machine Learning
+          </option>
+
+          <option value="Internet of Things">
+            Internet of Things
+          </option>
+
+          <option value="Full Stack Development II">
+            Full Stack Development II
+          </option>
+
+          <option value="Cyber Security">
+            Cyber Security
+          </option>
+
+        </select>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- LOCK STATUS -->
+
+    <section
+      id="lockStatusBox"
+      class="lock-status"
+    >
+      Attendance Status
+    </section>
+
+
+
+    <!-- ================= DASHBOARD ================= -->
+
+    <section class="dashboard">
+
+      <div class="card">
+
+        <span>Total Students</span>
+
+        <h2 id="totalStudents">
+          0
+        </h2>
+
+      </div>
+
+
+      <div class="card present-card">
+
+        <span>Present</span>
+
+        <h2 id="presentCount">
+          0
+        </h2>
+
+      </div>
+
+
+      <div class="card absent-card">
+
+        <span>Absent</span>
+
+        <h2 id="absentCount">
+          0
+        </h2>
+
+      </div>
+
+
+      <div class="card late-card">
+
+        <span>Late</span>
+
+        <h2 id="lateCount">
+          0
+        </h2>
+
+      </div>
+
+
+      <div class="card">
+
+        <span>Attendance</span>
+
+        <h2 id="attendancePercentage">
+          0%
+        </h2>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= CHART ================= -->
+
+    <section class="section-card">
+
+      <h2>📊 Attendance Overview</h2>
+
+      <div class="chart">
+
+        <div class="chart-item">
+
+          <div class="chart-label">
+
+            <span>Present</span>
+
+            <span id="chartPresentText">
+              0%
+            </span>
+
+          </div>
+
+          <div class="chart-bar">
+
+            <div
+              id="chartPresent"
+              class="chart-fill present-fill"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="chart-item">
+
+          <div class="chart-label">
+
+            <span>Absent</span>
+
+            <span id="chartAbsentText">
+              0%
+            </span>
+
+          </div>
+
+          <div class="chart-bar">
+
+            <div
+              id="chartAbsent"
+              class="chart-fill absent-fill"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <div class="chart-item">
+
+          <div class="chart-label">
+
+            <span>Late</span>
+
+            <span id="chartLateText">
+              0%
+            </span>
+
+          </div>
+
+          <div class="chart-bar">
+
+            <div
+              id="chartLate"
+              class="chart-fill late-fill"
+            ></div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= ADD STUDENT ================= -->
+
+    <section
+      id="studentManagement"
+      class="section-card"
+    >
+
+      <h2>➕ Student Management</h2>
+
+      <div class="student-form">
+
+        <input
+          id="rollInput"
+          type="number"
+          placeholder="Roll Number"
+        />
+
+        <input
+          id="nameInput"
+          type="text"
+          placeholder="Student Name"
+        />
+
+        <input
+          id="emailInput"
+          type="email"
+          placeholder="Email"
+        />
+
+        <button
+          id="saveStudentBtn"
+          onclick="addOrUpdateStudent()"
+        >
+          Add Student
+        </button>
+
+        <button
+          id="cancelStudentBtn"
+          class="secondary-btn hidden"
+          onclick="cancelStudentEdit()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <section class="toolbar">
+
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="🔍 Search student..."
+        oninput="renderStudents()"
+      />
+
+
+      <select
+        id="filterSelect"
+        onchange="renderStudents()"
+      >
+
+        <option value="all">
+          All Students
+        </option>
+
+        <option value="present">
+          Present
+        </option>
+
+        <option value="absent">
+          Absent
+        </option>
+
+        <option value="late">
+          Late
+        </option>
+
+        <option value="not-marked">
+          Not Marked
+        </option>
+
+        <option value="defaulter">
+          Below 75%
+        </option>
+
+      </select>
+
+
+      <select
+        id="sortSelect"
+        onchange="renderStudents()"
+      >
+
+        <option value="roll">
+          Roll Number
+        </option>
+
+        <option value="name">
+          Name A-Z
+        </option>
+
+        <option value="high">
+          Highest Attendance
+        </option>
+
+        <option value="low">
+          Lowest Attendance
+        </option>
+
+      </select>
+
+    </section>
+
+
+
+    <!-- ================= ACTIONS ================= -->
+
+    <section class="action-buttons">
+
+      <button
+        class="success-btn teacher-action"
+        onclick="markAllPresent()"
+      >
+        ✅ Mark All Present
+      </button>
+
+      <button
+        class="warning-btn teacher-action"
+        onclick="clearSelectedAttendance()"
+      >
+        🔄 Clear Attendance
+      </button>
+
+      <button
+        class="purple-btn teacher-action"
+        onclick="submitAttendance()"
+      >
+        🔒 Submit & Lock
+      </button>
+
+      <button
+        class="admin-only hidden"
+        onclick="unlockAttendance()"
+      >
+        🔓 Admin Unlock
+      </button>
+
+      <button onclick="exportCSV()">
+        📥 Export CSV
+      </button>
+
+      <button
+        class="admin-only hidden"
+        onclick="backupData()"
+      >
+        💾 Backup
+      </button>
+
+    </section>
+
+
+
+    <!-- ================= TABLE ================= -->
+
+    <section class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+        <tr>
+          <th>Roll</th>
+          <th>Name</th>
+          <th>Attendance</th>
+          <th>Status</th>
+          <th>Remark</th>
+          <th>Mark</th>
+          <th>Actions</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="studentTable"></tbody>
+
+      </table>
+
+    </section>
+
+
+
+    <!-- ================= DEFAULTERS ================= -->
+
+    <section class="section-card">
+
+      <h2>⚠️ Defaulter List</h2>
+
+      <div id="defaulterList">
+        No defaulters.
+      </div>
+
+    </section>
+
+
+
+    <!-- ================= MONTHLY REPORT ================= -->
+
+    <section class="section-card">
+
+      <div class="section-title">
+
+        <h2>📅 Monthly Report</h2>
+
+        <input
+          type="month"
+          id="monthPicker"
+          onchange="generateMonthlyReport()"
+        />
+
+      </div>
+
+      <div
+        class="table-wrapper"
+        id="monthlyReport"
+      ></div>
+
+    </section>
+
+
+
+    <!-- ================= AUDIT LOG ================= -->
+
+    <section
+      id="auditSection"
+      class="section-card hidden"
+    >
+
+      <h2>🛡 Attendance Audit Log</h2>
+
+      <div
+        id="auditLog"
+        class="audit-log"
+      ></div>
+
+    </section>
+
+  </div>
+
+</div>
+
+
+
+<!-- ================= HISTORY MODAL ================= -->
+
+<div
+  id="historyModal"
+  class="modal hidden"
+>
+
+  <div class="modal-content">
+
+    <div class="modal-header">
+
+      <h2 id="historyTitle">
+        Attendance History
+      </h2>
+
+      <button onclick="closeHistory()">
+        ✕
+      </button>
+
+    </div>
+
+    <div id="historyContent"></div>
+
+  </div>
+
+</div>
+
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
